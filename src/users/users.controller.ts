@@ -34,6 +34,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get single user by id' })
+  @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful operation',
@@ -62,6 +63,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOperation({ summary: `Update a user's password` })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -82,12 +84,19 @@ export class UsersController {
     return this.usersService.update(id, updatePasswordDto);
   }
 
-  @ApiOperation({ summary: `Delete user` })
-  @ApiResponse({ status: 204, description: 'The user has been deleted' })
-  //@ApiResponse(status404)
-  @ApiParam({ name: 'id', description: 'User ID' })
   @Delete(':id')
+  @ApiOperation({ summary: `Delete user` })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 204, description: 'The user has been deleted' })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. userId is invalid (not uuid)',
+  })
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }

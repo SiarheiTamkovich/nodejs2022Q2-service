@@ -13,10 +13,13 @@ export class UsersService {
       id: '40af606c-c0bb-47d1-bc20-a2857242cde3',
       login: 'login',
       password: 'password',
+      version: 1,
+      createdAt: 0,
+      updatedAt: 0,
     },
   ];
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     if (createUserDto.login === '' || createUserDto.password === '') {
       throw new HttpException(
         'Bad request. body does not contain required fields',
@@ -26,10 +29,14 @@ export class UsersService {
     const id = uuidv4();
     const user = new User(id, createUserDto.login, createUserDto.password);
     this.usersArr.push(user);
-    return user;
+    const response = {
+      id: user.id,
+      login: user.login,
+    };
+    return response;
   }
 
-  findAll() {
+  async findAll() {
     return this.usersArr;
   }
 
@@ -71,11 +78,27 @@ export class UsersService {
       throw new HttpException('oldPassowrd is wrong', HttpStatus.FORBIDDEN);
     }
     user.password = updatePasswordDto.newPassword;
-    return user;
+    ++user.version;
+    user.updatedAt = Number(new Date());
+    const response = {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+    };
+    return response;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. userId is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = this.usersArr.filter((user) => user.id === id)[0];
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     this.usersArr = this.usersArr.filter((user) => user.id !== id);
-    console.log(this.usersArr);
   }
 }
