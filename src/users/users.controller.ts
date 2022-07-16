@@ -63,11 +63,23 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOperation({ summary: `Update a user's password` })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. body does not contain required fields',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'oldPassowrd is wrong',
+  })
   update(
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.usersService.update(+id, updatePasswordDto);
+    return this.usersService.update(id, updatePasswordDto);
   }
 
   @ApiOperation({ summary: `Delete user` })

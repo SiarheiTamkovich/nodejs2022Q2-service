@@ -47,9 +47,31 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updatePasswordDto: UpdatePasswordDto) {
-    // const index = this._usersArr.map((user) => user.id === id);
-    // return new User(id, userId, updateUserDto.login, updateUserDto.password);
+  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+    if (
+      updatePasswordDto.oldPassword === '' ||
+      updatePasswordDto.newPassword === ''
+    ) {
+      throw new HttpException(
+        'Bad request. body does not contain required fields',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. userId is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = this.usersArr.filter((user) => user.id === id)[0];
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.password != updatePasswordDto.oldPassword) {
+      throw new HttpException('oldPassowrd is wrong', HttpStatus.FORBIDDEN);
+    }
+    user.password = updatePasswordDto.newPassword;
+    return user;
   }
 
   remove(id: string) {
