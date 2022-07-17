@@ -2,8 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
@@ -52,5 +50,53 @@ export class FavoritesController {
   })
   removeTrack(@Param('id') id: string) {
     return this.favoritesService.removeTrack(id);
+  }
+
+  @Post('album/:id')
+  @ApiParam({ name: 'id', description: 'album ID' })
+  @ApiOperation({ summary: 'Add album to the favorites' })
+  addAlbum(@Param('id') id: string) {
+    return this.favoritesService.addAlbum(id);
+  }
+
+  @Delete('album/:id')
+  @ApiParam({ name: 'id', description: 'album ID' })
+  @ApiOperation({ summary: 'Delete album from favorites' })
+  @ApiResponse({ status: 204, description: 'The album has been deleted' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Album was not found.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Album ID is invalid (not uuid)',
+  })
+  removeAlbum(@Param('id') id: string) {
+    return this.favoritesService.removeAlbum(id);
+  }
+
+  @Post('artist/:id')
+  @ApiParam({ name: 'id', description: 'artist ID' })
+  @ApiOperation({ summary: 'Add artist to the favorites' })
+  addArtist(@Param('id') id: string) {
+    return this.favoritesService.addArtist(id);
+  }
+
+  @Delete('artist/:id')
+  @ApiParam({ name: 'id', description: 'artist ID' })
+  @ApiOperation({ summary: 'Delete artist from favorites' })
+  @ApiResponse({ status: 204, description: 'The artist has been deleted' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Artist was not found.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Artist ID is invalid (not uuid)',
+  })
+  removeArtist(@Param('id') id: string) {
+    return this.favoritesService.removeArtist(id);
   }
 }

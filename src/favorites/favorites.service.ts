@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Favorite } from './entities/favorite.entity';
 import { validate as uuidValidate } from 'uuid';
 import { TrackService } from 'src/track/track.service';
+import { AlbumService } from 'src/album/album.service';
+import { ArtistsService } from 'src/artists/artists.service';
 
 @Injectable()
 export class FavoritesService {
@@ -33,7 +35,11 @@ export class FavoritesService {
     ],
   };
 
-  constructor(private readonly trackService: TrackService) {}
+  constructor(
+    private readonly trackService: TrackService,
+    private readonly albumService: AlbumService,
+    private readonly artistService: ArtistsService,
+  ) {}
 
   async findAll() {
     return this.favorites;
@@ -69,5 +75,70 @@ export class FavoritesService {
     }
     // eslint-disable-next-line prettier/prettier
     this.favorites.tracks = this.favorites.tracks.filter((track) => track.id !== id);
+  }
+
+  async addAlbum(id: string) {
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. Album ID is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // eslint-disable-next-line prettier/prettier
+    const album = this.albumService.albumsArr.filter((album) => album.id === id)[0];
+    if (!album) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+    this.favorites.albums.push(album);
+    return album;
+  }
+
+  removeAlbum(id: string) {
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. Album ID is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const album = this.favorites.albums.filter((album) => album.id === id)[0];
+
+    if (!album) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+    // eslint-disable-next-line prettier/prettier
+    this.favorites.albums = this.favorites.albums.filter((album) => album.id !== id);
+  }
+
+  async addArtist(id: string) {
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. Artist ID is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // eslint-disable-next-line prettier/prettier
+    const artist = this.artistService.artistsArr.filter((artist) => artist.id === id)[0];
+    if (!artist) {
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    this.favorites.artists.push(artist);
+    return artist;
+  }
+
+  removeArtist(id: string) {
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. Artist ID is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // eslint-disable-next-line prettier/prettier
+    const artist = this.favorites.artists.filter((artist) => artist.id === id)[0];
+
+    if (!artist) {
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    // eslint-disable-next-line prettier/prettier
+    this.favorites.artists = this.favorites.artists.filter((artist) => artist.id !== id);
   }
 }

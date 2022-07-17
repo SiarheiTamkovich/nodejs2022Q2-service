@@ -8,7 +8,7 @@ import { validate as uuidValidate } from 'uuid';
 @Injectable()
 export class ArtistsService {
   //
-  private artistsArr: Artist[] = [
+  public artistsArr: Artist[] = [
     {
       id: '40af606c-c0bb-47d1-bc20-a2857242cde4',
       name: 'Freddie Mercury',
