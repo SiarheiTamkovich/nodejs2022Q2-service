@@ -11,8 +11,8 @@ export class AlbumService {
   private albumsArr: Album[] = [
     {
       id: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-      name: 'Album name',
-      year: 1971,
+      name: 'Innuendo',
+      year: 1991,
       artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
     },
   ];

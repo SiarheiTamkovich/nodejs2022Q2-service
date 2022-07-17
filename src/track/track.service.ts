@@ -8,13 +8,13 @@ import { validate as uuidValidate } from 'uuid';
 @Injectable()
 export class TrackService {
   //
-  private albumsArr: Track[] = [
+  public trackArr: Track[] = [
     {
       id: '40af606c-c0bb-47d1-bc20-a2857242cde6',
-      name: 'Track name',
+      name: 'The Show Must Go On',
       artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
       albumId: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-      duration: 3600,
+      duration: 262,
     },
   ];
 
@@ -33,12 +33,12 @@ export class TrackService {
       createTrackDto.albumId,
       createTrackDto.duration,
     );
-    this.albumsArr.push(track);
+    this.trackArr.push(track);
     return track;
   }
 
   async findAll() {
-    return this.albumsArr;
+    return this.trackArr;
   }
 
   async findOne(id: string) {
@@ -48,7 +48,7 @@ export class TrackService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.albumsArr.filter((track) => track.id === id)[0];
+    const track = this.trackArr.filter((track) => track.id === id)[0];
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
@@ -68,7 +68,7 @@ export class TrackService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.albumsArr.filter((track) => track.id === id)[0];
+    const track = this.trackArr.filter((track) => track.id === id)[0];
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
@@ -86,10 +86,10 @@ export class TrackService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.albumsArr.filter((track) => track.id === id)[0];
+    const track = this.trackArr.filter((track) => track.id === id)[0];
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    this.albumsArr = this.albumsArr.filter((track) => track.id !== id);
+    this.trackArr = this.trackArr.filter((track) => track.id !== id);
   }
 }
