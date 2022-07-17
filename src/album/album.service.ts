@@ -46,7 +46,7 @@ export class AlbumService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.albumsArr.filter((artist) => artist.id === id)[0];
+    const album = this.albumsArr.filter((album) => album.id === id)[0];
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
