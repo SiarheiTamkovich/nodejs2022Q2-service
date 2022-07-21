@@ -6,8 +6,7 @@
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
 ## Downloading
-
-```
+REST Service
 git clone {repository URL}
 ```
 
