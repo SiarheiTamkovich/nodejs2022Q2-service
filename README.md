@@ -12,14 +12,9 @@ A simple REST API application under Docker environment.
 ## Docker build & start
 
 ```bash
-# docker env build
-$ docker-compose build
-
 # docker env start
 $ docker-compose up
 
-# remove docker container (services & networks)
-$ docker-compose down
 ```
 
 # Running the app without docker
