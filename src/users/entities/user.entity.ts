@@ -6,18 +6,23 @@ export class User {
   @ApiProperty({ description: 'User identifier', nullable: false })
   @PrimaryGeneratedColumn()
   id: string;
+  
   @ApiProperty({ description: 'User login', nullable: true })
   @Column()
   login: string;
+
   @ApiProperty({ description: 'User password', nullable: true })
   @Column()
   password: string;
+
   @ApiProperty({ description: 'User version', nullable: true })
   @Column()
   version: number;
+
   @ApiProperty({ description: 'User createdAt', nullable: true })
   @Column()
   createdAt: number;
+
   @ApiProperty({ description: 'User updatedAt', nullable: true })
   @Column()
   updatedAt: number;
