@@ -8,7 +8,7 @@ RUN mkdir -p ./dist
 
 COPY src ./src
 
-COPY package*.json tsconfig.json tsconfig.build.json ./
+COPY package*.json tsconfig*.json ./
 
 RUN npm install --force
 

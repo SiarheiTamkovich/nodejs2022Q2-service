@@ -76,5 +76,6 @@ docker build -t nodejs-postgres-repo .
 ```
 docker images
 ```
+docker-compose build
 docker-compose up
 ```
