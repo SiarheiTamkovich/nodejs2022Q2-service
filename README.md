@@ -8,6 +8,17 @@ A simple REST API application under Docker environment.
 * Swagger
 * Docker
 
+
+## Run Docker
+
+Install docker and docker-compose using the instruction https://docs.docker.com/get-docker/
+
+Run command:
+
+```
+docker-compose up
+```
+
 # Running the app on docker
 ## Docker build & start
 
@@ -17,22 +28,9 @@ $ docker-compose up
 
 ```
 
-# Running the app without docker
-## Installation
+## REST service docs
 
-```bash
-$ npm install
-```
+```Swagger
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+http://localhost/api
 ```
