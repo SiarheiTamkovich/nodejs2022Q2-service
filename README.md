@@ -19,15 +19,6 @@ Run command:
 docker-compose up
 ```
 
-# Running the app on docker
-## Docker build & start
-
-```bash
-# docker env start
-$ docker-compose up
-
-```
-
 ## REST service docs
 
 ```Swagger
