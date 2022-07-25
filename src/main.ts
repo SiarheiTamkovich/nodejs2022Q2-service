@@ -5,13 +5,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const port = process.env.PORT;
-
+ 
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
     .setDescription('Home music library service')
     .setVersion(' 1.0.0')
+    .addServer(`http://localhost:${port}`)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
