@@ -8,7 +8,7 @@ export class CreateUserDto {
   @MinLength(3)
   login: string;
 
-  @ApiProperty({ description: 'User password', nullable: true })
+  @ApiProperty({ description: 'User password', nullable: false })
   @IsNotEmpty()
   @IsString()
   @MinLength(8)

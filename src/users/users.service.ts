@@ -36,47 +36,30 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // const user = this.usersArr.filter((user) => user.id === id)[0];
-    // if (!user) {
-    //   throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    // }
-    // return user;
     return this.userRepository.findOneBy({ id });
   }
 
-  // async update(id: string, updatePasswordDto: UpdatePasswordDto) {
-  //   if (
-  //     updatePasswordDto.oldPassword === '' ||
-  //     updatePasswordDto.newPassword === ''
-  //   ) {
-  //     throw new HttpException(
-  //       'Bad request. body does not contain required fields',
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-  //   if (!uuidValidate(id)) {
-  //     throw new HttpException(
-  //       'Bad request. userId is invalid (not uuid)',
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-  //   const user = this.usersArr.filter((user) => user.id === id)[0];
-  //   if (!user) {
-  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  //   }
-  //   if (user.password != updatePasswordDto.oldPassword) {
-  //     throw new HttpException('oldPassowrd is wrong', HttpStatus.FORBIDDEN);
-  //   }
-  //   user.password = updatePasswordDto.newPassword;
-  //   ++user.version;
-  //   user.updatedAt = Number(new Date());
-  //   const response = {
-  //     id: user.id,
-  //     login: user.login,
-  //     version: user.version,
-  //   };
-  //   return response;
-  // }
+  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+    //
+    if (!uuidValidate(id)) {
+      throw new HttpException(
+        'Bad request. userId is invalid (not uuid)',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.password !== updatePasswordDto.oldPassword) {
+      throw new HttpException('Old Password is wrong', HttpStatus.FORBIDDEN);
+    }
+    user.password = updatePasswordDto.newPassword;
+    ++user.version;
+    user.updatedAt = new Date();
+    user.save();
+    return user;
+  }
 
   async remove(id: UUIDType): Promise<void> {
     if (!uuidValidate(id)) {

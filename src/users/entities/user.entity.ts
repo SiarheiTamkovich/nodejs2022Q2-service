@@ -8,9 +8,17 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export interface IUserResponse {
+export interface IUserResponseAdd {
   id: UUIDType;
   login: string;
+}
+
+export interface IUserResponseGet {
+  id: UUIDType;
+  login: string;
+  version: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Entity()
