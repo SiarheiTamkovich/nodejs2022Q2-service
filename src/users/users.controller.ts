@@ -13,7 +13,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { IUserResponse, User } from './entities/user.entity';
 
 @ApiTags('Users')
 @Controller('user')
@@ -48,41 +48,55 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
     description: 'User not found',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: UUIDType) {
     return this.usersService.findOne(id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User created',
+    type: User,
+  })
+  @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. body does not contain required fields',
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'User login already exists!',
+  })
+  async create(@Body() createUserDto: CreateUserDto) {
+    const newUser = await this.usersService.create(createUserDto);
+    const responseUser: IUserResponse = {
+      id: (newUser as User).id,
+      login: (newUser as User).login,
+    };
+    return responseUser;
   }
 
-  @Patch(':id')
-  @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiOperation({ summary: `Update a user's password` })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Bad request. body does not contain required fields',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'User not found',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'oldPassowrd is wrong',
-  })
-  update(
-    @Param('id') id: string,
-    @Body() updatePasswordDto: UpdatePasswordDto,
-  ) {
-    return this.usersService.update(id, updatePasswordDto);
-  }
+  // @Patch(':id')
+  // @ApiParam({ name: 'id', description: 'User ID' })
+  // @ApiOperation({ summary: `Update a user's password` })
+  // @ApiResponse({
+  //   status: HttpStatus.BAD_REQUEST,
+  //   description: 'Bad request. body does not contain required fields',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.NOT_FOUND,
+  //   description: 'User not found',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.FORBIDDEN,
+  //   description: 'oldPassowrd is wrong',
+  // })
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updatePasswordDto: UpdatePasswordDto,
+  // ) {
+  //   return this.usersService.update(id, updatePasswordDto);
+  // }
 
   @Delete(':id')
   @ApiOperation({ summary: `Delete user` })
@@ -97,7 +111,7 @@ export class UsersController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. userId is invalid (not uuid)',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: UUIDType) {
     return this.usersService.remove(id);
   }
 }

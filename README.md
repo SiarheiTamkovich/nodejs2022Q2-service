@@ -21,10 +21,10 @@ docker-compose up
 
 ## Run with NPM
 
-Installing postgresQL https://www.postgresql.org/download/
+Installing PostgreSQL https://www.postgresql.org/download/
 
 Create data base with name: nodejs-postgres-repo
-and:
+
 - user name: postgres
 - password: postgres
 
