@@ -22,7 +22,6 @@ export interface IUserResponseGet {
 }
 
 @Entity()
-//@Unique(['login'])
 export class User extends BaseEntity {
   @ApiProperty({ description: 'User identifier', nullable: false })
   @PrimaryGeneratedColumn('uuid')

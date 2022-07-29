@@ -1,19 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Album } from 'src/album/entities/album.entity';
-import { Artist } from 'src/artists/entities/artist.entity';
-import { Track } from 'src/track/entities/track.entity';
+import { BaseEntity } from 'typeorm';
 
-export class Favorite {
+export class Favorite extends BaseEntity {
+  //
   @ApiProperty({ description: 'Artists', nullable: true })
-  artists: Artist[];
-  @ApiProperty({ description: 'Albums', nullable: true })
-  albums: Album[];
-  @ApiProperty({ description: 'Tracks', nullable: true })
-  tracks: Track[];
+  artists: string[];
 
-  constructor(artists = [], albums = [], tracks = []) {
-    this.artists = artists;
-    this.albums = albums;
-    this.tracks = tracks;
-  }
+  @ApiProperty({ description: 'Albums', nullable: true })
+  albums: string[];
+
+  @ApiProperty({ description: 'Tracks', nullable: true })
+  tracks: string[];
 }

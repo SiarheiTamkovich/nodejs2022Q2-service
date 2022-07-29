@@ -2,35 +2,31 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
   //
-  public artistsArr: Artist[] = [
-    {
-      id: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-      name: 'Freddie Mercury',
-      grammy: false,
-    },
-  ];
+  constructor(
+    @InjectRepository(Artist)
+    private readonly artistRepository: Repository<Artist>,
+  ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    if (createArtistDto.name === '') {
+    //
+    const newArtist = this.artistRepository.create(createArtistDto);
+    return this.artistRepository.save(newArtist).catch(() => {
       throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
+        'User login already exists!',
+        HttpStatus.CONFLICT,
       );
-    }
-    const id = uuidv4();
-    const artist = new Artist(id, createArtistDto.name, createArtistDto.grammy);
-    this.artistsArr.push(artist);
-    return artist;
+    });
   }
 
   async findAll() {
-    return this.artistsArr;
+    return this.artistRepository.find();
   }
 
   async findOne(id: string) {
@@ -40,32 +36,24 @@ export class ArtistsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist = this.artistsArr.filter((artist) => artist.id === id)[0];
-    if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
-    return artist;
+    return this.artistRepository.findOneBy({ id });
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    if (updateArtistDto.name === '') {
-      throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    //
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. artistId is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist = this.artistsArr.filter((artist) => artist.id === id)[0];
+    const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
     artist.name = updateArtistDto.name;
     artist.grammy = updateArtistDto.grammy;
+    artist.save();
     return artist;
   }
 
@@ -76,10 +64,10 @@ export class ArtistsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist = this.artistsArr.filter((artist) => artist.id === id)[0];
+    const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
-    this.artistsArr = this.artistsArr.filter((artist) => artist.id !== id);
+    artist.remove();
   }
 }

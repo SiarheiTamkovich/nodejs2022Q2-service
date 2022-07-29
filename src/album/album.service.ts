@@ -2,41 +2,30 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumService {
   //
-  public albumsArr: Album[] = [
-    {
-      id: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-      name: 'Innuendo',
-      year: 1991,
-      artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-    },
-  ];
-
+  constructor(
+    @InjectRepository(Album)
+    private readonly albumRepository: Repository<Album>,
+  ) {}
   async create(createAlbumDto: CreateAlbumDto) {
-    if (createAlbumDto.name === '' || createAlbumDto.year < 1900) {
+
+    const newAlbum = this.albumRepository.create(createAlbumDto);
+    return this.albumRepository.save(newAlbum).catch(() => {
       throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
+        'User login already exists!',
+        HttpStatus.CONFLICT,
       );
-    }
-    const id = uuidv4();
-    const album = new Album(
-      id,
-      createAlbumDto.name,
-      createAlbumDto.year,
-      createAlbumDto.artistId,
-    );
-    this.albumsArr.push(album);
-    return album;
+    });
   }
 
   async findAll() {
-    return this.albumsArr;
+    return this.albumRepository.find();
   }
 
   async findOne(id: string) {
@@ -46,27 +35,19 @@ export class AlbumService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.albumsArr.filter((album) => album.id === id)[0];
-    if (!album) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
-    return album;
+
+    return this.albumRepository.findOneBy({ id });
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    if (updateAlbumDto.name === '') {
-      throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. albumId is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.albumsArr.filter((album) => album.id === id)[0];
+    const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
@@ -83,10 +64,10 @@ export class AlbumService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.albumsArr.filter((album) => album.id === id)[0];
+    const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    this.albumsArr = this.albumsArr.filter((album) => album.id !== id);
+    album.remove();
   }
 }

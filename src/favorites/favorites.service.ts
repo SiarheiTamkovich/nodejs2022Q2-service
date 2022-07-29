@@ -1,48 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Favorite } from './entities/favorite.entity';
 import { validate as uuidValidate } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ArtistsService } from 'src/artists/artists.service';
 import { TrackService } from 'src/track/track.service';
 import { AlbumService } from 'src/album/album.service';
-import { ArtistsService } from 'src/artists/artists.service';
 
 @Injectable()
 export class FavoritesService {
   //
-  private favorites: Favorite = {
-    artists: [
-      {
-        id: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-        name: 'Freddie Mercury',
-        grammy: false,
-      },
-    ],
-    albums: [
-      {
-        id: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-        name: 'Innuendo',
-        year: 1991,
-        artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-      },
-    ],
-    tracks: [
-      {
-        id: '40af606c-c0bb-47d1-bc20-a2857242cde6',
-        name: 'The Show Must Go On',
-        artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-        albumId: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-        duration: 262,
-      },
-    ],
-  };
-
   constructor(
+    @InjectRepository(Favorite)
+    private readonly favoriteRepository: Repository<Favorite>,
+    private readonly artistService: ArtistsService,
     private readonly trackService: TrackService,
     private readonly albumService: AlbumService,
-    private readonly artistService: ArtistsService,
   ) {}
 
   async findAll() {
-    return this.favorites;
+    return this.favoriteRepository.find();
   }
 
   async addTrack(id: string) {
@@ -52,13 +29,15 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // eslint-disable-next-line prettier/prettier
-    const track = this.trackService.trackArr.filter((track) => track.id === id)[0];
-    if (!track) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    }
-    this.favorites.tracks.push(track);
-    return track;
+
+    const favorite = await this.favoriteRepository.find();
+
+    return await this.favoriteRepository.save(favorite).catch(() => {
+      throw new HttpException(
+        'User login already exists!',
+        HttpStatus.CONFLICT,
+      );
+    });
   }
 
   removeTrack(id: string) {
@@ -68,13 +47,11 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.favorites.tracks.filter((track) => track.id === id)[0];
+    const track = this.trackService.findOne(id);
 
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    // eslint-disable-next-line prettier/prettier
-    this.favorites.tracks = this.favorites.tracks.filter((track) => track.id !== id);
   }
 
   async addAlbum(id: string) {
@@ -84,13 +61,12 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // eslint-disable-next-line prettier/prettier
-    const album = this.albumService.albumsArr.filter((album) => album.id === id)[0];
+
+    const album = this.albumService.findOne(id);
+
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    this.favorites.albums.push(album);
-    return album;
   }
 
   removeAlbum(id: string) {
@@ -100,13 +76,12 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.favorites.albums.filter((album) => album.id === id)[0];
+    const album = this.albumService.findOne(id);
 
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    // eslint-disable-next-line prettier/prettier
-    this.favorites.albums = this.favorites.albums.filter((album) => album.id !== id);
+
   }
 
   async addArtist(id: string) {
@@ -116,29 +91,26 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // eslint-disable-next-line prettier/prettier
-    const artist = this.artistService.artistsArr.filter((artist) => artist.id === id)[0];
+    const artist = this.artistService.findOne(id);
+
     if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    this.favorites.artists.push(artist);
-    return artist;
   }
 
   removeArtist(id: string) {
+    //
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. Artist ID is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-    // eslint-disable-next-line prettier/prettier
-    const artist = this.favorites.artists.filter((artist) => artist.id === id)[0];
+
+    const artist = this.artistService.findOne(id);
 
     if (!artist) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    // eslint-disable-next-line prettier/prettier
-    this.favorites.artists = this.favorites.artists.filter((artist) => artist.id !== id);
   }
 }
