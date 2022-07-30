@@ -14,13 +14,10 @@ export class AlbumService {
     private readonly albumRepository: Repository<Album>,
   ) {}
   async create(createAlbumDto: CreateAlbumDto) {
-
+    //
     const newAlbum = this.albumRepository.create(createAlbumDto);
     return this.albumRepository.save(newAlbum).catch(() => {
-      throw new HttpException(
-        'User login already exists!',
-        HttpStatus.CONFLICT,
-      );
+      throw new HttpException('Album already exists!', HttpStatus.CONFLICT);
     });
   }
 
@@ -40,7 +37,7 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
-
+    //
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. albumId is invalid (not uuid)',
@@ -54,6 +51,7 @@ export class AlbumService {
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;
     album.artistId = updateAlbumDto.artistId;
+    album.save();
     return album;
   }
 

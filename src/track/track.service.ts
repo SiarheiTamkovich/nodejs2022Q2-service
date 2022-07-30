@@ -4,41 +4,26 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
   //
-  public trackArr: Track[] = [
-    {
-      id: '40af606c-c0bb-47d1-bc20-a2857242cde6',
-      name: 'The Show Must Go On',
-      artistId: '40af606c-c0bb-47d1-bc20-a2857242cde4',
-      albumId: '40af606c-c0bb-47d1-bc20-a2857242cde5',
-      duration: 262,
-    },
-  ];
-
+  constructor(
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
+  ) {}
   async create(createTrackDto: CreateTrackDto) {
-    if (createTrackDto.name === '') {
-      throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const id = uuidv4();
-    const track = new Track(
-      id,
-      createTrackDto.name,
-      createTrackDto.artistId,
-      createTrackDto.albumId,
-      createTrackDto.duration,
-    );
-    this.trackArr.push(track);
-    return track;
+    //
+    const newTrack = this.trackRepository.create(createTrackDto);
+    return this.trackRepository.save(newTrack).catch(() => {
+      throw new HttpException('Track already exists!', HttpStatus.CONFLICT);
+    });
   }
 
   async findAll() {
-    return this.trackArr;
+    return this.trackRepository.find();
   }
 
   async findOne(id: string) {
@@ -48,27 +33,19 @@ export class TrackService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.trackArr.filter((track) => track.id === id)[0];
-    if (!track) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    }
-    return track;
+
+    return this.trackRepository.findOneBy({ id });
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    if (updateTrackDto.name === '') {
-      throw new HttpException(
-        'Bad request. body does not contain required fields',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    //
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. albumId is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.trackArr.filter((track) => track.id === id)[0];
+    const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
@@ -76,6 +53,7 @@ export class TrackService {
     track.artistId = updateTrackDto.artistId;
     track.albumId = updateTrackDto.albumId;
     track.duration = updateTrackDto.duration;
+    track.save();
     return track;
   }
 
@@ -86,10 +64,10 @@ export class TrackService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const track = this.trackArr.filter((track) => track.id === id)[0];
+    const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    this.trackArr = this.trackArr.filter((track) => track.id !== id);
+    track.remove();
   }
 }

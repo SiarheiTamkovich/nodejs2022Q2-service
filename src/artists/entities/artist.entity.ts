@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Album } from 'src/album/entities/album.entity';
+import { Track } from 'src/track/entities/track.entity';
 import {
   BaseEntity,
   Column,
@@ -35,4 +36,10 @@ export class Artist extends BaseEntity {
     onUpdate: 'CASCADE',
   })
   albums!: string;
+
+  @OneToMany(() => Track, (track) => track.artist, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  tracks!: string;
 }

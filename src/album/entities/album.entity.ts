@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Artist } from 'src/artists/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -49,4 +51,10 @@ export class Album extends BaseEntity {
   })
   @JoinColumn({ name: 'artistId' })
   artist!: string;
+
+  @OneToMany(() => Track, (track) => track.album, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  tracks!: string;
 }
