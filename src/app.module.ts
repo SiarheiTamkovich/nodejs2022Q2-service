@@ -12,6 +12,7 @@ import { Artist } from './artists/entities/artist.entity';
 import { Album } from './album/entities/album.entity';
 import { Track } from './track/entities/track.entity';
 import { Favorite } from './favorites/entities/favorite.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { Favorite } from './favorites/entities/favorite.entity';
       entities: [User, Artist, Album, Track, Favorite],
       synchronize: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
