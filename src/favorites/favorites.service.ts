@@ -29,8 +29,7 @@ export class FavoritesService {
 
   async initData() {
     const favorite = await this.favoriteRepository.find();
-    console.log(favorite);
-    //if (!!favorite) favorite.save(this.startData);
+    if (!favorite[0]) this.favoriteRepository.save(this.startData);
   }
 
   async findAll() {
@@ -40,31 +39,27 @@ export class FavoritesService {
   async addTrack(id: string) {
     if (!uuidValidate(id)) {
       throw new HttpException(
-        'Bad request. artistId is invalid (not uuid)',
+        'Bad request. trackId is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const favoriteTrack = await this.favoriteRepository.find();
-
-    //const favorite = this.startData;
-    console.log(favoriteTrack);
-
-    // return await this.favoriteRepository.save(favoriteTrack).catch(() => {
-    //   throw new HttpException(
-    //     'User login already exists!',
-    //     HttpStatus.CONFLICT,
-    //   );
-    // });
+    const favorite = await this.favoriteRepository.find();
+    const track = this.trackService.findOne(id);
+    if (!track) {
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    favorite[0].tracks.push(id);
+//    this.favoriteRepository.save(favorite);
   }
 
-  removeTrack(id: string) {
+  async removeTrack(id: string) {
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. Track ID is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
+//    const favorite = await this.favoriteRepository.find();
     const track = this.trackService.findOne(id);
 
     if (!track) {
