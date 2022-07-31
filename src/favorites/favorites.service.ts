@@ -16,7 +16,22 @@ export class FavoritesService {
     private readonly artistService: ArtistsService,
     private readonly trackService: TrackService,
     private readonly albumService: AlbumService,
-  ) {}
+  ) {
+    this.initData();
+  }
+
+  private startData = {
+    id: '40af606c-c0bb-47d1-bc20-a2857242cde3',
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
+
+  async initData() {
+    const favorite = await this.favoriteRepository.find();
+    console.log(favorite);
+    //if (!!favorite) favorite.save(this.startData);
+  }
 
   async findAll() {
     return this.favoriteRepository.find();
@@ -30,14 +45,17 @@ export class FavoritesService {
       );
     }
 
-    const favorite = await this.favoriteRepository.find();
+    const favoriteTrack = await this.favoriteRepository.find();
 
-    return await this.favoriteRepository.save(favorite).catch(() => {
-      throw new HttpException(
-        'User login already exists!',
-        HttpStatus.CONFLICT,
-      );
-    });
+    //const favorite = this.startData;
+    console.log(favoriteTrack);
+
+    // return await this.favoriteRepository.save(favoriteTrack).catch(() => {
+    //   throw new HttpException(
+    //     'User login already exists!',
+    //     HttpStatus.CONFLICT,
+    //   );
+    // });
   }
 
   removeTrack(id: string) {
@@ -81,7 +99,6 @@ export class FavoritesService {
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-
   }
 
   async addArtist(id: string) {
@@ -112,5 +129,10 @@ export class FavoritesService {
     if (!artist) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async removeAllData() {
+    const favorite = await this.favoriteRepository.find();
+    favorite[0].remove();
   }
 }

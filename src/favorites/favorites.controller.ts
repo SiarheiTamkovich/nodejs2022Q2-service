@@ -99,4 +99,9 @@ export class FavoritesController {
   removeArtist(@Param('id') id: string) {
     return this.favoritesService.removeArtist(id);
   }
+
+  @Delete()
+  removeAll() {
+    return this.favoritesService.removeAllData();
+  }
 }
