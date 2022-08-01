@@ -12,7 +12,7 @@ export class AuthService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  async signIn(body: SignInUserDto): Promise<{ token: string }> {
+  async login(body: SignInUserDto): Promise<{ token: string }> {
     //
     const user = await this.usersRepository.findOne({
       select: ['id', 'password'],
