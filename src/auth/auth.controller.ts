@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SignInUserDto } from './dto/sign-in-user.dto';
+import signIn from './schema/sign-in.schema';
+import signUp from './schema/sign-up.schema';
 
+@ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @ApiOperation({ summary: 'Create token' })
+  @ApiResponse({
+    status: 201,
+    schema: signIn,
+  })
+  @Post('/sign-in')
+  signIn(@Body() signInDto: SignInUserDto) {
+    return this.authService.signIn(signInDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @ApiOperation({ summary: 'Sign up to create an account' })
+  @ApiResponse({
+    status: 200,
+    schema: signUp,
+  })
+  @Post('/sign-up')
+  signup(@Body() signUpDto: CreateUserDto) {
+    return this.usersService.create(signUpDto);
   }
 }

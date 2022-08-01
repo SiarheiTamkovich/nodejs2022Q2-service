@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     ArtistsModule,
     AlbumModule,
@@ -31,7 +32,6 @@ import { AuthModule } from './auth/auth.module';
       entities: [User, Artist, Album, Track, Favorite],
       synchronize: true,
     }),
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

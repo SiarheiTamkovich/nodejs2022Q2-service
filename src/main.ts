@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
     .setDescription('Home music library service')
-    .setVersion(' 2.0.0')
+    .setVersion('2.0.1')
     .addServer(`http://localhost:${port}`)
     .build();
 
