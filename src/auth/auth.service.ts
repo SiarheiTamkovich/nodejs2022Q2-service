@@ -4,6 +4,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignInUserDto } from './dto/sign-in-user.dto';
 import jwt = require('jsonwebtoken');
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,9 @@ export class AuthService {
       throw new HttpException('User was not founded!', HttpStatus.FORBIDDEN);
     }
 
-    if (body.password !== user.password) {
+    // eslint-disable-next-line prettier/prettier
+    const isPasswordCorrect = await bcrypt.compare(body.password, user.password);
+    if (!isPasswordCorrect) {
       throw new HttpException('User password wrong!', HttpStatus.FORBIDDEN);
     }
 
