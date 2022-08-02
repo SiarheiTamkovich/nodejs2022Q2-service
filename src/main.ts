@@ -16,6 +16,17 @@ async function bootstrap() {
     .setDescription('Home music library service')
     .setVersion('2.0.1')
     .addServer(`http://localhost:${port}`)
+    .addBearerAuth(
+      {
+        in: 'header',
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+      },
+      'token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

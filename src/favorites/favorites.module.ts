@@ -6,9 +6,11 @@ import { AlbumModule } from 'src/album/album.module';
 import { ArtistsModule } from 'src/artists/artists.module';
 import { Favorite } from './entities/favorite.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     TrackModule,
     AlbumModule,
     ArtistsModule,
