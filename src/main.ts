@@ -1,8 +1,11 @@
 import 'dotenv/config';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { LogService } from './shared/logger/logger.service';
+import { LoggingInterceptor } from './shared/logger/logging.interceptor';
+import { ExceptionsFilter } from './shared/exeptions/exeptions.filter';
 
 async function bootstrap() {
   // port
@@ -34,6 +37,18 @@ async function bootstrap() {
 
   // Validation Pipeline settings
   app.useGlobalPipes(new ValidationPipe());
+
+  // Global connect Logger
+  const logger = app.get<LogService>(LogService);
+  app.useLogger(logger);
+
+  // Logging interceptor settings
+  app.useGlobalInterceptors(new LoggingInterceptor(logger));
+
+  // Exceptions Filter settings
+  const { httpAdapter } = app.get<HttpAdapterHost>(HttpAdapterHost);
+  app.useGlobalFilters(new ExceptionsFilter(httpAdapter, logger));
+ 
 
   await app.listen(port);
   console.log(`Application is running on localhost:${port}`);
