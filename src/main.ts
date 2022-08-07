@@ -48,7 +48,6 @@ async function bootstrap() {
   // Exceptions Filter settings
   const { httpAdapter } = app.get<HttpAdapterHost>(HttpAdapterHost);
   app.useGlobalFilters(new ExceptionsFilter(httpAdapter, logger));
- 
 
   await app.listen(port);
   console.log(`Application is running on localhost:${port}`);

@@ -42,7 +42,11 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {

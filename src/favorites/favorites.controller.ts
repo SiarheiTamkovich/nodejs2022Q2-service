@@ -110,8 +110,8 @@ export class FavoritesController {
     return this.favoritesService.removeArtist(id);
   }
 
-  @Delete()
-  removeAll() {
-    return this.favoritesService.removeAllData();
-  }
+  // @Delete()
+  // removeAll() {
+  //   return this.favoritesService.removeAllData();
+  // }
 }

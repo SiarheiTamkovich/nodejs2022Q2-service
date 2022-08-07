@@ -26,14 +26,11 @@ export class AlbumService {
   }
 
   async findOne(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. albumsId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
+    const album = await this.albumRepository.findOneBy({ id });
+    if (!album) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-
-    return this.albumRepository.findOneBy({ id });
+    return album;
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {

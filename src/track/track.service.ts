@@ -34,7 +34,11 @@ export class TrackService {
       );
     }
 
-    return this.trackRepository.findOneBy({ id });
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) {
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    return track;
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {

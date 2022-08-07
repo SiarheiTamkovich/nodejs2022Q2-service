@@ -9,6 +9,7 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -58,7 +59,7 @@ export class AlbumController {
     status: HttpStatus.NOT_FOUND,
     description: 'album not found',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.albumService.findOne(id);
   }
 

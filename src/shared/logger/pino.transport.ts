@@ -1,6 +1,9 @@
 import pino, { TransportMultiOptions } from 'pino';
+import { createFolder } from '../utils/crate.folder';
 
 const { LOG_ERR_LEVEL, LOG_INFO_LEVEL } = process.env;
+
+createFolder('logs');
 
 const transport = pino.transport(<TransportMultiOptions>{
   targets: [

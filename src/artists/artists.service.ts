@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
-import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -25,28 +24,19 @@ export class ArtistsService {
     });
   }
 
-  async findAll() {
+  async findAll(): Promise<Artist[]> {
     return this.artistRepository.find();
   }
 
   async findOne(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. artistId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
+    const artist = await this.artistRepository.findOneBy({ id });
+    if (!artist) {
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
-    return this.artistRepository.findOneBy({ id });
+    return artist;
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    //
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. artistId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
@@ -58,12 +48,6 @@ export class ArtistsService {
   }
 
   async remove(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. ArtistId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
