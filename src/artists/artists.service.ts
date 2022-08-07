@@ -1,10 +1,18 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FavoritesService } from 'src/favorites/favorites.service';
+import { TrackService } from 'src/track/track.service';
+import { AlbumService } from 'src/album/album.service';
 
 @Injectable()
 export class ArtistsService {
@@ -15,6 +23,12 @@ export class ArtistsService {
 
     @Inject(forwardRef(() => FavoritesService))
     private readonly favoritesService: FavoritesService,
+
+    @Inject(forwardRef(() => TrackService))
+    private readonly trackService: TrackService,
+
+    @Inject(forwardRef(() => AlbumService))
+    private readonly albumService: AlbumService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -54,5 +68,13 @@ export class ArtistsService {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
     artist.remove();
+
+    const favorite = await this.favoritesService.findAll();
+    if (favorite[0].artists.includes(id)) {
+      this.favoritesService.removeArtist(id);
+    }
+
+    await this.trackService.removeArtist(id);
+    await this.albumService.removeArtist(id);
   }
 }

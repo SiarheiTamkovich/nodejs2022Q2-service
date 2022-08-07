@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
@@ -6,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class TrackService {
@@ -13,6 +20,9 @@ export class TrackService {
   constructor(
     @InjectRepository(Track)
     private readonly trackRepository: Repository<Track>,
+
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
   ) {}
   async create(createTrackDto: CreateTrackDto) {
     //
@@ -73,5 +83,26 @@ export class TrackService {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
     track.remove();
+
+    const favorite = await this.favoritesService.findAll();
+    if (favorite[0].tracks.includes(id)) {
+      this.favoritesService.removeTrack(id);
+    }
+  }
+
+  async removeArtist(id: string): Promise<void> {
+    const result = await this.findAll();
+    for (const track of result) {
+      if (track.artistId === id)
+        await this.update(track.id, { ...track, artistId: null });
+    }
+  }
+
+  async removeAlbum(id: string): Promise<void> {
+    const result = await this.findAll();
+    for (const track of result) {
+      if (track.albumId === id)
+        await this.update(track.id, { ...track, albumId: null });
+    }
   }
 }

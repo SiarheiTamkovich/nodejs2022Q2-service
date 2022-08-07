@@ -1,4 +1,10 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { Favorite } from './entities/favorite.entity';
 import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
