@@ -17,10 +17,7 @@ export class ArtistsService {
     //
     const newArtist = this.artistRepository.create(createArtistDto);
     return this.artistRepository.save(newArtist).catch(() => {
-      throw new HttpException(
-        'User login already exists!',
-        HttpStatus.CONFLICT,
-      );
+      throw new HttpException('Artist already exists!', HttpStatus.CONFLICT);
     });
   }
 

@@ -33,7 +33,7 @@ export class FavoritesService {
   }
 
   async findAll() {
-    return this.favoriteRepository.find();
+    return await this.favoriteRepository.find();
   }
 
   async addTrack(id: string) {
@@ -45,11 +45,21 @@ export class FavoritesService {
     }
     const favorite = await this.favoriteRepository.find();
     const track = this.trackService.findOne(id);
+
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
+
+    if (favorite[0].tracks.includes(id)) {
+      throw new HttpException(
+        'This track is already exists!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     favorite[0].tracks.push(id);
-//    this.favoriteRepository.save(favorite);
+    this.favoriteRepository.save(favorite);
+    return favorite[0].tracks.filter((trackId) => trackId === id);
   }
 
   async removeTrack(id: string) {
@@ -59,12 +69,21 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-//    const favorite = await this.favoriteRepository.find();
-    const track = this.trackService.findOne(id);
+    const favorite = await this.favoriteRepository.find();
+    const track = await this.trackService.findOne(id);
 
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
+
+    if (!favorite[0].tracks.includes(id)) {
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+
+    favorite[0].tracks = favorite[0].tracks.filter((trackId) => trackId !== id);
+    this.favoriteRepository.save(favorite);
+    console.log(id);
+    console.log(favorite[0].tracks);
   }
 
   async addAlbum(id: string) {
