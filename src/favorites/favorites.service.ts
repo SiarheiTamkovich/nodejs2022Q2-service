@@ -44,7 +44,7 @@ export class FavoritesService {
       );
     }
     const favorite = await this.favoriteRepository.find();
-    const track = this.trackService.findOne(id);
+    const track = await this.trackService.findOne(id);
 
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
@@ -82,8 +82,6 @@ export class FavoritesService {
 
     favorite[0].tracks = favorite[0].tracks.filter((trackId) => trackId !== id);
     this.favoriteRepository.save(favorite);
-    console.log(id);
-    console.log(favorite[0].tracks);
   }
 
   async addAlbum(id: string) {
@@ -94,25 +92,46 @@ export class FavoritesService {
       );
     }
 
-    const album = this.albumService.findOne(id);
+    const favorite = await this.favoriteRepository.find();
+    const album = await this.albumService.findOne(id);
 
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
+
+    if (favorite[0].albums.includes(id)) {
+      throw new HttpException(
+        'This album is already exists!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    favorite[0].albums.push(id);
+    this.favoriteRepository.save(favorite);
+    return favorite[0].albums.filter((albumId) => albumId === id);
   }
 
-  removeAlbum(id: string) {
+  async removeAlbum(id: string) {
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. Album ID is invalid (not uuid)',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const album = this.albumService.findOne(id);
+
+    const favorite = await this.favoriteRepository.find();
+    const album = await this.albumService.findOne(id);
 
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
+
+    if (!favorite[0].albums.includes(id)) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+
+    favorite[0].albums = favorite[0].albums.filter((albumId) => albumId !== id);
+    this.favoriteRepository.save(favorite);
   }
 
   async addArtist(id: string) {
@@ -122,14 +141,27 @@ export class FavoritesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const artist = this.artistService.findOne(id);
+
+    const favorite = await this.favoriteRepository.find();
+    const artist = await this.artistService.findOne(id);
 
     if (!artist) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
+
+    if (favorite[0].artists.includes(id)) {
+      throw new HttpException(
+        'This artist is already exists!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    favorite[0].artists.push(id);
+    this.favoriteRepository.save(favorite);
+    return favorite[0].artists.filter((artistId) => artistId === id);
   }
 
-  removeArtist(id: string) {
+  async removeArtist(id: string) {
     //
     if (!uuidValidate(id)) {
       throw new HttpException(
@@ -138,15 +170,25 @@ export class FavoritesService {
       );
     }
 
-    const artist = this.artistService.findOne(id);
+    const favorite = await this.favoriteRepository.find();
+    const artist = await this.artistService.findOne(id);
 
     if (!artist) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
+
+    if (!favorite[0].artists.includes(id)) {
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+
+    favorite[0].artists = favorite[0].artists.filter(
+      (artistId) => artistId !== id,
+    );
+    this.favoriteRepository.save(favorite);
   }
 
-  async removeAllData() {
-    const favorite = await this.favoriteRepository.find();
-    favorite[0].remove();
-  }
+  // async removeAllData() {
+  //   const favorite = await this.favoriteRepository.find();
+  //   favorite[0].remove();
+  // }
 }
