@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Favorite } from './entities/favorite.entity';
 import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,8 +13,14 @@ export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
     private readonly favoriteRepository: Repository<Favorite>,
+
+    @Inject(forwardRef(() => ArtistsService))
     private readonly artistService: ArtistsService,
+
+    @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
+
+    @Inject(forwardRef(() => AlbumService))
     private readonly albumService: AlbumService,
   ) {
     this.initData();
