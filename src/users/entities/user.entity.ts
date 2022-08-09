@@ -1,25 +1,61 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  BaseEntity,
+  UpdateDateColumn,
+} from 'typeorm';
 
-export class User {
-  @ApiProperty({ description: 'User identifier', nullable: false })
-  id: string;
-  @ApiProperty({ description: 'User login', nullable: true })
+export interface IUserResponseAdd {
+  id: UUIDType;
   login: string;
-  @ApiProperty({ description: 'User password', nullable: true })
-  password: string;
-  @ApiProperty({ description: 'User version', nullable: true })
-  version: number;
-  @ApiProperty({ description: 'User createdAt', nullable: true })
-  createdAt: number;
-  @ApiProperty({ description: 'User updatedAt', nullable: true })
-  updatedAt: number;
+}
 
-  constructor(id: string, login = '', password = '') {
-    this.id = id;
-    this.login = login;
-    this.password = password;
-    this.version = 1;
-    this.createdAt = Number(new Date());
-    this.updatedAt = 0;
-  }
+export interface IUserResponseGet {
+  id: UUIDType;
+  login: string;
+  version: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+@Entity()
+export class User extends BaseEntity {
+  @ApiProperty({ description: 'User identifier', nullable: false })
+  @PrimaryGeneratedColumn('uuid')
+  id!: UUIDType;
+
+  @ApiProperty({ description: 'User login', nullable: false })
+  @Column({
+    name: 'login',
+    nullable: false,
+    default: '',
+    unique: true,
+  })
+  login!: string;
+
+  @ApiProperty({ description: 'User password', nullable: false })
+  @Column({
+    name: 'password',
+    nullable: false,
+    default: '',
+  })
+  password!: string;
+
+  @ApiProperty({ description: 'User version', nullable: false })
+  @Column({
+    nullable: false,
+    default: 1,
+  })
+  version: number;
+
+  @ApiProperty({ description: 'User createdAt', nullable: false })
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ApiProperty({ description: 'User updatedAt', nullable: false })
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

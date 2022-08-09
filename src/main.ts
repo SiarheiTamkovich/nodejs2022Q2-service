@@ -11,7 +11,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
     .setDescription('Home music library service')
-    .setVersion(' 1.0.0')
+    .setVersion(' 2.0.0')
+    .addServer(`http://localhost:${port}`)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

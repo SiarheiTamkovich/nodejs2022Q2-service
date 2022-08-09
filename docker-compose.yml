@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12
+    container_name: db
+    env_file: .env
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    env_file: .env
+    restart: always
+    volumes:
+      - ./src:/app/src
+    ports:
+      - ${PORT}:${PORT}
+    depends_on: 
+      db:
+        condition: service_healthy
