@@ -9,5 +9,6 @@ export class CreateArtistDto {
 
   @ApiProperty({ description: 'Artist grammy', nullable: false })
   @IsBoolean()
+  @IsNotEmpty()
   grammy: boolean;
 }

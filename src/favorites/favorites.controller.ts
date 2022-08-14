@@ -6,13 +6,23 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Favorite } from './entities/favorite.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Favorites')
+@ApiBearerAuth('token')
 @Controller('favs')
+@UseGuards(AuthGuard)
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
@@ -100,8 +110,8 @@ export class FavoritesController {
     return this.favoritesService.removeArtist(id);
   }
 
-  @Delete()
-  removeAll() {
-    return this.favoritesService.removeAllData();
-  }
+  // @Delete()
+  // removeAll() {
+  //   return this.favoritesService.removeAllData();
+  // }
 }

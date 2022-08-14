@@ -10,5 +10,6 @@ export class UpdateArtistDto extends PartialType(CreateArtistDto) {
 
   @ApiProperty({ description: 'Artist New grammy', nullable: true })
   @IsBoolean()
+  @IsNotEmpty()
   grammy: boolean;
 }

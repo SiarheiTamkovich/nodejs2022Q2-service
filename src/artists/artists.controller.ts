@@ -8,15 +8,26 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
 
 @ApiTags('Artists')
+@ApiBearerAuth('token')
 @Controller('artist')
+@UseGuards(AuthGuard)
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
@@ -48,7 +59,7 @@ export class ArtistsController {
     status: HttpStatus.NOT_FOUND,
     description: 'Artist not found',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Artist> {
     return this.artistsService.findOne(id);
   }
 
@@ -73,7 +84,10 @@ export class ArtistsController {
     status: HttpStatus.NOT_FOUND,
     description: 'Artist not found',
   })
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateArtistDto: UpdateArtistDto,
+  ) {
     return this.artistsService.update(id, updateArtistDto);
   }
 
@@ -90,7 +104,7 @@ export class ArtistsController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. artistId is invalid (not uuid)',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.artistsService.remove(id);
   }
 }

@@ -16,7 +16,7 @@ Install docker and docker-compose using the instruction https://docs.docker.com/
 Run command:
 
 ```
-docker-compose up
+docker-compose up --build
 ```
 
 ## Run with NPM
@@ -31,7 +31,7 @@ Create data base with name: nodejs-postgres-repo
 Installing NPM modules
 
 ```
-npm install
+npm install --force
 ```
 Running application
 

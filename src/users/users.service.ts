@@ -6,6 +6,7 @@ import { validate as uuidValidate } from 'uuid';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { hashData } from 'src/shared/utils/hashData';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     //
-    const newUser = this.userRepository.create(createUserDto);
+    const { login, password } = createUserDto;
+
+    const hashPassword = await hashData(password);
+    console.log(hashPassword);
+    // eslint-disable-next-line prettier/prettier
+    const newUser = this.userRepository.create({login, password: hashPassword});
     return this.userRepository.save(newUser).catch(() => {
       throw new HttpException(
         'User login already exists!',
@@ -36,7 +42,11 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {

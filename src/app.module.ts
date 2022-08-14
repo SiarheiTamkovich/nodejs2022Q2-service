@@ -12,9 +12,12 @@ import { Artist } from './artists/entities/artist.entity';
 import { Album } from './album/entities/album.entity';
 import { Track } from './track/entities/track.entity';
 import { Favorite } from './favorites/entities/favorite.entity';
+import { AuthModule } from './auth/auth.module';
+import { LoggerModule } from './shared/logger/logger.module';
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     ArtistsModule,
     AlbumModule,
@@ -30,6 +33,7 @@ import { Favorite } from './favorites/entities/favorite.entity';
       entities: [User, Artist, Album, Track, Favorite],
       synchronize: true,
     }),
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
