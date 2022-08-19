@@ -8,7 +8,6 @@ import {
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -37,13 +36,6 @@ export class TrackService {
   }
 
   async findOne(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. albumsId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);

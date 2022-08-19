@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,9 +19,9 @@ export class UsersService {
     const { login, password } = createUserDto;
 
     const hashPassword = await hashData(password);
-    console.log(hashPassword);
+    //console.log(hashPassword);
     // eslint-disable-next-line prettier/prettier
-    const newUser = this.userRepository.create({login, password: hashPassword});
+    const newUser = this.userRepository.create({ login, password: hashPassword });
     return this.userRepository.save(newUser).catch(() => {
       throw new HttpException(
         'User login already exists!',
@@ -36,12 +35,6 @@ export class UsersService {
   }
 
   async findOne(id: UUIDType) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. userId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

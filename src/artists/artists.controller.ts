@@ -39,6 +39,10 @@ export class ArtistsController {
     type: Artist,
     isArray: true,
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Access token is missing or invalid',
+  })
   findAll() {
     return this.artistsService.findAll();
   }
@@ -56,6 +60,10 @@ export class ArtistsController {
     description: 'Bad request. artistId is invalid (not uuid)',
   })
   @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Access token is missing or invalid',
+  })
+  @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Artist not found',
   })
@@ -66,8 +74,16 @@ export class ArtistsController {
   @Post()
   @ApiOperation({ summary: 'Create artist' })
   @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The artist created',
+  })
+  @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. body does not contain required fields',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Access token is missing or invalid',
   })
   create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
@@ -79,6 +95,10 @@ export class ArtistsController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. body does not contain required fields',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Access token is missing or invalid',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -96,6 +116,10 @@ export class ArtistsController {
   @ApiParam({ name: 'id', description: 'Artist ID' })
   @ApiResponse({ status: 204, description: 'The artist has been deleted' })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Access token is missing or invalid',
+  })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Artist not found',

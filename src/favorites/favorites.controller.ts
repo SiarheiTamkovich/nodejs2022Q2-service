@@ -41,6 +41,10 @@ export class FavoritesController {
   @Post('track/:id')
   @ApiParam({ name: 'id', description: 'track ID' })
   @ApiOperation({ summary: 'Add track to the favorites' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The track added',
+  })
   addTrack(@Param('id') id: string) {
     return this.favoritesService.addTrack(id);
   }
@@ -65,6 +69,10 @@ export class FavoritesController {
   @Post('album/:id')
   @ApiParam({ name: 'id', description: 'album ID' })
   @ApiOperation({ summary: 'Add album to the favorites' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The album added',
+  })
   addAlbum(@Param('id') id: string) {
     return this.favoritesService.addAlbum(id);
   }
@@ -89,6 +97,10 @@ export class FavoritesController {
   @Post('artist/:id')
   @ApiParam({ name: 'id', description: 'artist ID' })
   @ApiOperation({ summary: 'Add artist to the favorites' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The artist created',
+  })
   addArtist(@Param('id') id: string) {
     return this.favoritesService.addArtist(id);
   }
@@ -96,7 +108,10 @@ export class FavoritesController {
   @Delete('artist/:id')
   @ApiParam({ name: 'id', description: 'artist ID' })
   @ApiOperation({ summary: 'Delete artist from favorites' })
-  @ApiResponse({ status: 204, description: 'The artist has been deleted' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'The artist has been deleted',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

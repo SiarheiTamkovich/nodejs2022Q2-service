@@ -9,6 +9,7 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -56,14 +57,18 @@ export class TrackController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'track not found',
+    description: 'Track not found',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.trackService.findOne(id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create track' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The album created',
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. body does not contain required fields',

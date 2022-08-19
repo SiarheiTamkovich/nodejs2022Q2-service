@@ -66,6 +66,10 @@ export class AlbumController {
   @Post()
   @ApiOperation({ summary: 'Create album' })
   @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The album created',
+  })
+  @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. body does not contain required fields',
   })

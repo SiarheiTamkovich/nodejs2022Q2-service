@@ -9,6 +9,7 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,7 +31,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @ApiTags('Users')
 @ApiBearerAuth('token')
 @Controller('user')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -62,7 +63,7 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
     description: 'User not found',
   })
-  async findOne(@Param('id') id: UUIDType) {
+  async findOne(@Param('id', new ParseUUIDPipe()) id: UUIDType) {
     const user = await this.usersService.findOne(id);
     const responseUser: IUserResponseGet = {
       id: (user as User).id,
@@ -114,7 +115,7 @@ export class UsersController {
     description: 'Old Password is wrong',
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     const user = await this.usersService.update(id, updatePasswordDto);
@@ -141,7 +142,7 @@ export class UsersController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. userId is invalid (not uuid)',
   })
-  remove(@Param('id') id: UUIDType) {
+  remove(@Param('id', new ParseUUIDPipe()) id: UUIDType) {
     return this.usersService.remove(id);
   }
 }
