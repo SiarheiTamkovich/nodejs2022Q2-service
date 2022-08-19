@@ -13,7 +13,7 @@ import {
 export class Artist extends BaseEntity {
   @ApiProperty({ description: 'Artist identifier', nullable: false })
   @PrimaryGeneratedColumn('uuid')
-  id!: UUIDType;
+  id!: string;
 
   @ApiProperty({ description: 'Artist name', nullable: false })
   @Column({

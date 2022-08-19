@@ -10,6 +10,8 @@ import {
   HttpCode,
   UseGuards,
   ParseUUIDPipe,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,11 +23,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  IUserResponseAdd,
-  IUserResponseGet,
-  User,
-} from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Users')
@@ -36,6 +34,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -48,6 +47,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Get single user by id' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({
@@ -63,19 +63,13 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
     description: 'User not found',
   })
-  async findOne(@Param('id', new ParseUUIDPipe()) id: UUIDType) {
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     const user = await this.usersService.findOne(id);
-    const responseUser: IUserResponseGet = {
-      id: (user as User).id,
-      login: (user as User).login,
-      version: (user as User).version,
-      createdAt: (user as User).createdAt,
-      updatedAt: (user as User).updatedAt,
-    };
-    return responseUser;
+    return user;
   }
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -92,14 +86,11 @@ export class UsersController {
   })
   async create(@Body() createUserDto: CreateUserDto) {
     const newUser = await this.usersService.create(createUserDto);
-    const responseUser: IUserResponseAdd = {
-      id: (newUser as User).id,
-      login: (newUser as User).login,
-    };
-    return responseUser;
+    return newUser;
   }
 
   @Patch(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOperation({ summary: `Update a user's password` })
   @ApiResponse({
@@ -119,14 +110,7 @@ export class UsersController {
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     const user = await this.usersService.update(id, updatePasswordDto);
-    const responseUser: IUserResponseGet = {
-      id: (user as User).id,
-      login: (user as User).login,
-      version: (user as User).version,
-      createdAt: (user as User).createdAt,
-      updatedAt: (user as User).updatedAt,
-    };
-    return responseUser;
+    return user;
   }
 
   @Delete(':id')
@@ -142,7 +126,7 @@ export class UsersController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. userId is invalid (not uuid)',
   })
-  remove(@Param('id', new ParseUUIDPipe()) id: UUIDType) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id);
   }
 }

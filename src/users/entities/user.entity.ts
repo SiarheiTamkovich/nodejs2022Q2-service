@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -8,24 +9,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export interface IUserResponseAdd {
-  id: UUIDType;
-  login: string;
-}
-
-export interface IUserResponseGet {
-  id: UUIDType;
-  login: string;
-  version: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 @Entity()
 export class User extends BaseEntity {
   @ApiProperty({ description: 'User identifier', nullable: false })
   @PrimaryGeneratedColumn('uuid')
-  id!: UUIDType;
+  id!: string;
 
   @ApiProperty({ description: 'User login', nullable: false })
   @Column({
@@ -42,6 +30,7 @@ export class User extends BaseEntity {
     nullable: false,
     default: '',
   })
+  @Exclude()
   password!: string;
 
   @ApiProperty({ description: 'User version', nullable: false })
@@ -52,10 +41,10 @@ export class User extends BaseEntity {
   version: number;
 
   @ApiProperty({ description: 'User createdAt', nullable: false })
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column('bigint')
+  createdAt: number;
 
   @ApiProperty({ description: 'User updatedAt', nullable: false })
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column('bigint')
+  updatedAt: number;
 }

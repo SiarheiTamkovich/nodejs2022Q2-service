@@ -27,7 +27,7 @@ import { Artist } from './entities/artist.entity';
 @ApiTags('Artists')
 @ApiBearerAuth('token')
 @Controller('artist')
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 

@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hashData } from 'src/shared/utils/hashData';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -16,12 +17,17 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     //
-    const { login, password } = createUserDto;
-
+    const { password } = createUserDto;
     const hashPassword = await hashData(password);
-    //console.log(hashPassword);
-    // eslint-disable-next-line prettier/prettier
-    const newUser = this.userRepository.create({ login, password: hashPassword });
+    const user = {
+      login: createUserDto.login,
+      password: hashPassword,
+      version: 1,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+
+    const newUser = this.userRepository.create(user);
     return this.userRepository.save(newUser).catch(() => {
       throw new HttpException(
         'User login already exists!',
@@ -34,7 +40,7 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findOne(id: UUIDType) {
+  async findOne(id: string) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -54,17 +60,24 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    if (user.password !== updatePasswordDto.oldPassword) {
-      throw new HttpException('Old Password is wrong', HttpStatus.FORBIDDEN);
+
+    const isOldPasswordCorrect = await bcrypt.compare(
+      updatePasswordDto.oldPassword,
+      user.password,
+    );
+    if (!isOldPasswordCorrect) {
+      throw new HttpException('Old Password is wrong!', HttpStatus.FORBIDDEN);
     }
-    user.password = updatePasswordDto.newPassword;
+
+    const hashPassword = await hashData(updatePasswordDto.newPassword);
+    user.password = hashPassword;
     ++user.version;
-    user.updatedAt = new Date();
+    user.updatedAt = Date.now();
     user.save();
     return user;
   }
 
-  async remove(id: UUIDType): Promise<void> {
+  async remove(id: string): Promise<void> {
     if (!uuidValidate(id)) {
       throw new HttpException(
         'Bad request. userId is invalid (not uuid)',
