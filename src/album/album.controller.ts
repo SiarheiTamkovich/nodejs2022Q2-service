@@ -59,7 +59,7 @@ export class AlbumController {
     status: HttpStatus.NOT_FOUND,
     description: 'album not found',
   })
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.albumService.findOne(id);
   }
 
@@ -88,7 +88,10 @@ export class AlbumController {
     status: HttpStatus.NOT_FOUND,
     description: 'album not found',
   })
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
     return this.albumService.update(id, updateAlbumDto);
   }
 
@@ -105,7 +108,7 @@ export class AlbumController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. albumId is invalid (not uuid)',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.albumService.remove(id);
   }
 }

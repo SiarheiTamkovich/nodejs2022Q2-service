@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { validate as uuidValidate } from 'uuid';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -50,12 +49,6 @@ export class UsersService {
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {
     //
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. userId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -78,12 +71,7 @@ export class UsersService {
   }
 
   async remove(id: string): Promise<void> {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. userId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    //
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

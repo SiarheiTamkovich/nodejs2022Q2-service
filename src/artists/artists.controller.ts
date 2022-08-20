@@ -67,7 +67,7 @@ export class ArtistsController {
     status: HttpStatus.NOT_FOUND,
     description: 'Artist not found',
   })
-  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Artist> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Artist> {
     return this.artistsService.findOne(id);
   }
 
@@ -105,7 +105,7 @@ export class ArtistsController {
     description: 'Artist not found',
   })
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
     return this.artistsService.update(id, updateArtistDto);
@@ -128,7 +128,7 @@ export class ArtistsController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. artistId is invalid (not uuid)',
   })
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.artistsService.remove(id);
   }
 }

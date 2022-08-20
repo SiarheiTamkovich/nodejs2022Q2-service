@@ -59,7 +59,7 @@ export class TrackController {
     status: HttpStatus.NOT_FOUND,
     description: 'Track not found',
   })
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.trackService.findOne(id);
   }
 
@@ -88,7 +88,10 @@ export class TrackController {
     status: HttpStatus.NOT_FOUND,
     description: 'track not found',
   })
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     return this.trackService.update(id, updateTrackDto);
   }
 
@@ -105,7 +108,7 @@ export class TrackController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. trackId is invalid (not uuid)',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.trackService.remove(id);
   }
 }

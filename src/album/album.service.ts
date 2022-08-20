@@ -8,7 +8,6 @@ import {
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
-import { validate as uuidValidate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TrackService } from 'src/track/track.service';
@@ -49,12 +48,6 @@ export class AlbumService {
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
     //
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. albumId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
@@ -67,12 +60,7 @@ export class AlbumService {
   }
 
   async remove(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. AlbumId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    //
     const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);

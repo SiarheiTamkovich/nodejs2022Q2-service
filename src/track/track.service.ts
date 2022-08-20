@@ -45,12 +45,6 @@ export class TrackService {
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     //
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. albumId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
@@ -64,12 +58,7 @@ export class TrackService {
   }
 
   async remove(id: string) {
-    if (!uuidValidate(id)) {
-      throw new HttpException(
-        'Bad request. TrackId is invalid (not uuid)',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    //
     const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
