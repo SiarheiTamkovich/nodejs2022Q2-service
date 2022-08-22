@@ -40,6 +40,7 @@ export class ArtistsService {
   }
 
   async findAll(): Promise<Artist[]> {
+    console.log(this.artistRepository.find());
     return this.artistRepository.find();
   }
 

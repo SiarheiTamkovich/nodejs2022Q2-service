@@ -22,12 +22,10 @@ import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Tracks')
 @ApiBearerAuth('token')
 @Controller('track')
-@UseGuards(AuthGuard)
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 

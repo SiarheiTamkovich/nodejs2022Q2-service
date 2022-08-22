@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { Public } from './auth.decorator';
 import { AuthService } from './auth.service';
 import { SignInUserDto } from './dto/sign-in-user.dto';
 import signIn from './schema/sign-in.schema';
@@ -16,6 +17,7 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  @Public()
   @Post('/login')
   @ApiOperation({ summary: 'Create token' })
   @ApiResponse({
@@ -27,6 +29,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Public()
   @Post('/signup')
   @ApiOperation({ summary: 'Sign up to create an account' })
   @ApiResponse({

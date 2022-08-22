@@ -14,6 +14,8 @@ import { Track } from './track/entities/track.entity';
 import { Favorite } from './favorites/entities/favorite.entity';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from './shared/logger/logger.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -36,6 +38,6 @@ import { LoggerModule } from './shared/logger/logger.module';
     LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}
