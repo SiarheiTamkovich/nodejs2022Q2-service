@@ -1,11 +1,21 @@
-import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  Request,
+  HttpCode,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Public } from './auth.decorator';
 import { AuthService } from './auth.service';
+import { RefreshTokenDto } from './dto/refresh.token.dto';
 import { SignInUserDto } from './dto/sign-in-user.dto';
+import { LocalAuthGuard } from './guards/local.auth.guard';
 import signIn from './schema/sign-in.schema';
 import signUp from './schema/sign-up.schema';
 
@@ -18,6 +28,7 @@ export class AuthController {
   ) {}
 
   @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiOperation({ summary: 'Create token' })
   @ApiResponse({
@@ -44,5 +55,15 @@ export class AuthController {
       login: (newUser as User).login,
     };
     return responseUser;
+  }
+
+  @Public()
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token' })
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.createAccessTokenFromRefreshToken(
+      refreshTokenDto.refreshToken,
+    );
   }
 }

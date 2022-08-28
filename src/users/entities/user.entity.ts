@@ -33,6 +33,11 @@ export class User extends BaseEntity {
   @Exclude()
   password!: string;
 
+  @ApiProperty({ description: 'User refresh token', nullable: true })
+  @Column({ name: 'token', nullable: true })
+  @Exclude()
+  refresh_token?: string;
+
   @ApiProperty({ description: 'User version', nullable: false })
   @Column({
     nullable: false,

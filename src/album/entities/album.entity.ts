@@ -20,7 +20,7 @@ export class Album extends BaseEntity {
     nullable: false,
   })
   @PrimaryGeneratedColumn('uuid')
-  id!: UUIDType;
+  id!: string;
 
   @ApiProperty({ description: 'Album name', nullable: true })
   @Column({
