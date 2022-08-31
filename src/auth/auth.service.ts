@@ -125,4 +125,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
   }
+
+  async removeRefreshToken(token: string) {
+    const decoded = await this.jwtService.decode(token);
+    const user = await this.userRepository.findOneBy({ id: decoded.sub });
+    if (!user) {
+      throw new HttpException(
+        'User with this id does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return await this.userRepository.update(
+      { id: user.id },
+      { refresh_token: null },
+    );
+  }
 }

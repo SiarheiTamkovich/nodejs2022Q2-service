@@ -8,7 +8,6 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
-  UseGuards,
   ParseUUIDPipe,
   ClassSerializerInterceptor,
   UseInterceptors,

@@ -6,8 +6,14 @@ import {
   Request,
   HttpCode,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -29,7 +35,7 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
+  @Post('login')
   @ApiOperation({ summary: 'Create token' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -41,7 +47,7 @@ export class AuthController {
   }
 
   @Public()
-  @Post('/signup')
+  @Post('signup')
   @ApiOperation({ summary: 'Sign up to create an account' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -65,5 +71,18 @@ export class AuthController {
     return this.authService.createAccessTokenFromRefreshToken(
       refreshTokenDto.refreshToken,
     );
+  }
+
+  @Post('logout')
+  @ApiBearerAuth('token')
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User successful login out',
+  })
+  @HttpCode(HttpStatus.OK)
+  async logOut(@Request() req, @Headers('authorization') authorization) {
+    await this.authService.removeRefreshToken(authorization?.split(' ')?.[1]);
+    req.res.setHeader('Authorization', null);
   }
 }
