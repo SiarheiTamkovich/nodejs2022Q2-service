@@ -3,13 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
   HttpCode,
-  UseGuards,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -75,7 +74,7 @@ export class TrackController {
     return this.trackService.create(createTrackDto);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiParam({ name: 'id', description: 'track ID' })
   @ApiOperation({ summary: `Update a track's information` })
   @ApiResponse({

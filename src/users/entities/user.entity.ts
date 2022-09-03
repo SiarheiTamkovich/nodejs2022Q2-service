@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  BaseEntity,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,7 +13,7 @@ export class User extends BaseEntity {
     name: 'login',
     nullable: false,
     default: '',
-    unique: true,
+    // unique: true,
   })
   login!: string;
 

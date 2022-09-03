@@ -3,13 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
   HttpCode,
-  UseGuards,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -87,7 +86,7 @@ export class ArtistsController {
     return this.artistsService.create(createArtistDto);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiParam({ name: 'id', description: 'Artist ID' })
   @ApiOperation({ summary: `Update a artist's information` })
   @ApiResponse({

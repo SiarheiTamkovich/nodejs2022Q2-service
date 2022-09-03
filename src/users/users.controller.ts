@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
@@ -11,6 +10,7 @@ import {
   ParseUUIDPipe,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -86,7 +86,7 @@ export class UsersController {
     return newUser;
   }
 
-  @Patch(':id')
+  @Put(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOperation({ summary: `Update a user's password` })

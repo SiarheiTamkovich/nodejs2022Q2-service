@@ -22,7 +22,7 @@ export class Track extends BaseEntity {
     name: 'name',
     nullable: false,
     default: '',
-    unique: true,
+    //unique: true,
   })
   name!: string;
 

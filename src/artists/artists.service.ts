@@ -32,11 +32,13 @@ export class ArtistsService {
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    //
-    const newArtist = this.artistRepository.create(createArtistDto);
-    return await this.artistRepository.save(newArtist).catch(() => {
+    const newArtist = await this.artistRepository.create(createArtistDto);
+    // eslint-disable-next-line prettier/prettier
+    await this.artistRepository.save(newArtist)
+    .catch(() => {
       throw new HttpException('Artist already exists!', HttpStatus.CONFLICT);
     });
+    return newArtist;
   }
 
   async findAll(): Promise<Artist[]> {

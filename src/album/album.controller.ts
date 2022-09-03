@@ -3,13 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
   HttpCode,
-  UseGuards,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -75,7 +74,7 @@ export class AlbumController {
     return this.albumService.create(createAlbumDto);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiParam({ name: 'id', description: 'album ID' })
   @ApiOperation({ summary: `Update a album's information` })
   @ApiResponse({

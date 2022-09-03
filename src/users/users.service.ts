@@ -27,7 +27,8 @@ export class UsersService {
     };
 
     const newUser = this.userRepository.create(user);
-    return this.userRepository.save(newUser).catch(() => {
+    return this.userRepository.save(newUser).catch((err) => {
+      console.log(err);
       throw new HttpException(
         'User login already exists!',
         HttpStatus.CONFLICT,
@@ -36,7 +37,8 @@ export class UsersService {
   }
 
   async findAll() {
-    return this.userRepository.find();
+    const users = await this.userRepository.find();
+    return users;
   }
 
   async findOne(id: string) {
@@ -44,6 +46,7 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+    console.log(typeof user.createdAt);
     return user;
   }
 
