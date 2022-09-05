@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Exclude, Transform } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  VersionColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -32,17 +40,16 @@ export class User extends BaseEntity {
   refresh_token?: string;
 
   @ApiProperty({ description: 'User version', nullable: false })
-  @Column({
-    nullable: false,
-    default: 1,
-  })
+  @VersionColumn()
   version: number;
 
   @ApiProperty({ description: 'User createdAt', nullable: false })
-  @Column('bigint')
-  createdAt: number;
+  @CreateDateColumn()
+  @Transform(({ value }) => new Date(value).getTime())
+  createdAt: Date;
 
   @ApiProperty({ description: 'User updatedAt', nullable: false })
-  @Column('bigint')
-  updatedAt: number;
+  @UpdateDateColumn()
+  @Transform(({ value }) => new Date(value).getTime())
+  updatedAt: Date;
 }

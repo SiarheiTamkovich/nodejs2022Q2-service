@@ -50,6 +50,11 @@ async function bootstrap() {
   app.useGlobalFilters(new ExceptionsFilter(httpAdapter, logger));
 
   await app.listen(port);
-  console.log(`Application is running on localhost:${port}`);
+  console.log(`
+  🚀  Server is running!
+  🔉  Listening on port ${port}
+  📭  Query at http://localhost:${port}
+  📄  OpenApi docs at http://localhost:${port}/api
+  `);
 }
 bootstrap();

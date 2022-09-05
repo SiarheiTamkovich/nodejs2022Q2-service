@@ -21,9 +21,6 @@ export class UsersService {
     const user = {
       login: createUserDto.login,
       password: hashPassword,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
     };
 
     const newUser = this.userRepository.create(user);
@@ -67,10 +64,7 @@ export class UsersService {
 
     const hashPassword = await hashData(updatePasswordDto.newPassword);
     user.password = hashPassword;
-    ++user.version;
-    user.updatedAt = Date.now();
-    user.save();
-    return user;
+    return await this.userRepository.save(user);
   }
 
   async remove(id: string): Promise<void> {
