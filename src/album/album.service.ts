@@ -68,11 +68,6 @@ export class AlbumService {
     album.remove();
 
     await this.trackService.removeAlbum(id);
-
-    const favorite = await this.favoritesService.findAll();
-    if (favorite[0].albums.includes(id)) {
-      this.favoritesService.removeAlbum(id);
-    }
   }
 
   async removeArtist(id: string) {

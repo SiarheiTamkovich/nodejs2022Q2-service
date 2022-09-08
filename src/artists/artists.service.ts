@@ -20,13 +20,10 @@ export class ArtistsService {
   constructor(
     @InjectRepository(Artist)
     private readonly artistRepository: Repository<Artist>,
-
     @Inject(forwardRef(() => FavoritesService))
     private readonly favoritesService: FavoritesService,
-
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
-
     @Inject(forwardRef(() => AlbumService))
     private readonly albumService: AlbumService,
   ) {}
@@ -70,11 +67,6 @@ export class ArtistsService {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
     artist.remove();
-
-    const favorite = await this.favoritesService.findAll();
-    if (favorite[0].artists.includes(id)) {
-      this.favoritesService.removeArtist(id);
-    }
 
     await this.trackService.removeArtist(id);
     await this.albumService.removeArtist(id);

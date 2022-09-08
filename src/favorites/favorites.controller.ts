@@ -6,6 +6,7 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import {
@@ -15,7 +16,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Favorite } from './entities/favorite.entity';
 
 @ApiTags('Favorites')
 @ApiBearerAuth('token')
@@ -28,7 +28,6 @@ export class FavoritesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful operation',
-    type: Favorite,
     isArray: true,
   })
   findAll() {
@@ -42,7 +41,7 @@ export class FavoritesController {
     status: HttpStatus.CREATED,
     description: 'The track added',
   })
-  addTrack(@Param('id') id: string) {
+  addTrack(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.addTrack(id);
   }
 
@@ -59,7 +58,7 @@ export class FavoritesController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. trackId is invalid (not uuid)',
   })
-  removeTrack(@Param('id') id: string) {
+  removeTrack(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.removeTrack(id);
   }
 
@@ -70,7 +69,7 @@ export class FavoritesController {
     status: HttpStatus.CREATED,
     description: 'The album added',
   })
-  addAlbum(@Param('id') id: string) {
+  addAlbum(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.addAlbum(id);
   }
 
@@ -87,7 +86,7 @@ export class FavoritesController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. Album ID is invalid (not uuid)',
   })
-  removeAlbum(@Param('id') id: string) {
+  removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.removeAlbum(id);
   }
 
@@ -98,7 +97,7 @@ export class FavoritesController {
     status: HttpStatus.CREATED,
     description: 'The artist created',
   })
-  addArtist(@Param('id') id: string) {
+  addArtist(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.addArtist(id);
   }
 
@@ -118,7 +117,7 @@ export class FavoritesController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. Artist ID is invalid (not uuid)',
   })
-  removeArtist(@Param('id') id: string) {
+  removeArtist(@Param('id', ParseUUIDPipe) id: string) {
     return this.favoritesService.removeArtist(id);
   }
 

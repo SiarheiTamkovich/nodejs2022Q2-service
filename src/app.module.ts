@@ -7,11 +7,6 @@ import { AlbumModule } from './album/album.module';
 import { TrackModule } from './track/track.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
-import { Artist } from './artists/entities/artist.entity';
-import { Album } from './album/entities/album.entity';
-import { Track } from './track/entities/track.entity';
-import { Favorite } from './favorites/entities/favorite.entity';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from './shared/logger/logger.module';
 import { APP_GUARD } from '@nestjs/core';
@@ -32,7 +27,7 @@ import { JwtAuthGuard } from './auth/guards/jwt.auth.guard';
       username: process.env.POSTGRES_USER || 'postgres',
       password: process.env.POSTGRES_PASSWORD || 'postgres',
       database: process.env.POSTGRES_DB || 'postgres',
-      entities: [User, Artist, Album, Track, Favorite],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     LoggerModule,

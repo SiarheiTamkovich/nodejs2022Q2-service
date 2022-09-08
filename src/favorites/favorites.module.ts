@@ -4,9 +4,16 @@ import { FavoritesController } from './favorites.controller';
 import { TrackModule } from 'src/track/track.module';
 import { AlbumModule } from 'src/album/album.module';
 import { ArtistsModule } from 'src/artists/artists.module';
-import { Favorite } from './entities/favorite.entity';
+import {
+  FavoriteAlbum,
+  FavoriteArtist,
+  FavoriteTrack,
+} from './entities/favorite.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
+import { Album } from 'src/album/entities/album.entity';
 
 @Module({
   imports: [
@@ -14,7 +21,14 @@ import { AuthModule } from 'src/auth/auth.module';
     forwardRef(() => TrackModule),
     forwardRef(() => AlbumModule),
     forwardRef(() => ArtistsModule),
-    TypeOrmModule.forFeature([Favorite]),
+    TypeOrmModule.forFeature([
+      FavoriteArtist,
+      FavoriteTrack,
+      FavoriteAlbum,
+      Artist,
+      Track,
+      Album,
+    ]),
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],

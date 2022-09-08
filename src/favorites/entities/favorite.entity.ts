@@ -1,26 +1,44 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Album } from 'src/album/entities/album.entity';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
+import {
+  BaseEntity,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
-export class Favorite extends BaseEntity {
-  //
-  @ApiProperty({
-    example: '40af606c-c0bb-47d1-bc20-a2857242cde3',
-    description: 'Favorite identifier',
-    nullable: true,
-  })
+export class FavoriteArtist extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('simple-array')
+  @OneToOne(() => Artist, { onDelete: 'CASCADE' })
   @ApiProperty({ description: 'Artists', nullable: true, default: [] })
-  artists: string[];
+  @JoinColumn()
+  artist: Artist;
+}
 
-  @Column('simple-array')
+@Entity()
+export class FavoriteAlbum extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @OneToOne(() => Album, { onDelete: 'CASCADE' })
   @ApiProperty({ description: 'Albums', nullable: true, default: [] })
-  albums: string[];
+  @JoinColumn()
+  album: Album;
+}
 
-  @Column('simple-array')
+@Entity()
+export class FavoriteTrack extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @OneToOne(() => Track, { onDelete: 'CASCADE' })
   @ApiProperty({ description: 'Tracks', nullable: true, default: [] })
-  tracks: string[];
+  @JoinColumn()
+  track: Track;
 }

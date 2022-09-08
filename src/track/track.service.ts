@@ -18,10 +18,10 @@ export class TrackService {
   constructor(
     @InjectRepository(Track)
     private readonly trackRepository: Repository<Track>,
-
     @Inject(forwardRef(() => FavoritesService))
     private readonly favoritesService: FavoritesService,
   ) {}
+
   async create(createTrackDto: CreateTrackDto) {
     //
     const newTrack = this.trackRepository.create(createTrackDto);
@@ -63,11 +63,6 @@ export class TrackService {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
     track.remove();
-
-    const favorite = await this.favoritesService.findAll();
-    if (favorite[0].tracks.includes(id)) {
-      this.favoritesService.removeTrack(id);
-    }
   }
 
   async removeArtist(id: string): Promise<void> {
