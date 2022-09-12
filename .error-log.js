@@ -7,7 +7,8 @@ module.exports = {
       path: "logs/error/", // path to write files to
       size: "10K", // max file size: ;
       rotate: 5, // keep 5 rotated logs
-      compress: "gzip",
+      interval: "10m", // "1d"-rotate daily
+      compress: "gzip", // compress rotated files
     }
   }
 }

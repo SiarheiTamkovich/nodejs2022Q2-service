@@ -43,7 +43,6 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    console.log(typeof user.createdAt);
     return user;
   }
 
